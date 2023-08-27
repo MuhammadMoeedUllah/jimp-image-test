@@ -1,0 +1,15 @@
+{
+  "name": "image-generator",
+  "version": "1.0.0",
+  "description": "generates images from text",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jimp": "^0.22.7"
+  }
+}
