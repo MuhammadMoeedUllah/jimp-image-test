@@ -11,18 +11,17 @@ const FLOORS = [require('../ground'), require('../first'), require('../roof')]
 
 const CONCEPT = [
     ['PRIVACY', [
-        'Two entrances: guests go from the porch straight into the drawing',
-        'room (with its own bath); the family uses the main door to the foyer.',
-        'A jaali screen at the foyer keeps the lounge out of view from the door.',
-        'Bedrooms are upstairs, away from guests and the street.',
+        'Step in through the small door: a 2\'-0" side alley on the left, behind',
+        'a low jaali, leads to the main door - nobody squeezes past the car.',
+        'The jaali screen at the foyer keeps the lounge out of view from the door.',
+        'Family moves kitchen - foyer - stair without crossing the lounge.',
         'Terrace and drying yard sit at the rear, hidden from the street.',
     ]],
     ['COMFORT', [
-        'An open-to-sky court in the middle brings daylight and air to the',
-        'lounge, kitchen, family bath, master bedroom, master bath and study.',
-        'Every bathroom has a window to the street or the court.',
-        'Easy stair: 7" risers, 10" treads, 3\'-0" flights, 10\'-6" floor to floor.',
-        'Master suite in the quiet middle, with a walk-in dressing.',
+        'Ground-floor bedroom suite (own bath) for elders: no stairs, windows',
+        'to the street and over the bed to the alley for cross-ventilation.',
+        'An open-to-sky court lights the lounge, kitchen, baths, master and study.',
+        'Every bed has a 23" or wider walkway; easy stair: 7" risers, 10" treads.',
         'Insulated roof + white terrace tiles keep the bedrooms below cool.',
     ]],
     ['UTILITY', [
@@ -31,12 +30,11 @@ const CONCEPT = [
         'Laundry next to the drying yard; linen store in the mumty.',
         '8 solar panels on the front roof; water tank on the mumty roof;',
         'underground tank under the porch floor; meters on the gate pier.',
-        'Shoe cabinet at the door; wardrobe in every bedroom; study / prayer room.',
     ]],
     ['BEAUTY', [
         'Court garden with a tree, bench and planter, seen from the lounge,',
         'kitchen, master bedroom and study; glass slider from the lounge.',
-        'Jaali screens on the street windows filter light and views.',
+        'Jaali screens on the street windows and along the side alley.',
         'Planted family terrace with a daybed for summer evenings.',
     ]],
 ]
@@ -102,10 +100,11 @@ const renderInfo = (width, checks) => {
     y += 50
     const sched = [
         ['GROUND FLOOR', null],
-        ['Car porch', size(G, 'porch'), area(G, 'porch')],
-        ['Drawing room (+ guest bath)', size(G, 'drawing'), area(G, 'drawing')],
-        ['Guest bath', size(G, 'gbath'), area(G, 'gbath')],
-        ['TV lounge + dining', '13\'-4" x 12\'-10½"', area(G, 'lounge')],
+        ['Car porch + entry landing', '10\'-0" x 16\'-6"', area(G, 'porch')],
+        ['Side alley (behind low jaali)', size(G, 'alley'), area(G, 'alley')],
+        ['Bedroom (ground floor, + bath)', size(G, 'bedroom'), area(G, 'bedroom')],
+        ['Bedroom bath', size(G, 'bbath'), area(G, 'bbath')],
+        ['Lounge + dining (L-shaped)', size(G, 'lounge'), area(G, 'lounge')],
         ['Foyer', '3\'-9½" x 9\'-8"', area(G, 'foyer')],
         ['Kitchen', size(G, 'kitchen'), area(G, 'kitchen')],
         ['Family bath', size(G, 'bath'), area(G, 'bath')],
@@ -148,7 +147,8 @@ const renderInfo = (width, checks) => {
             y += 27
         }
     }
-    T('Car gate: 7\'-7½" rolling shutter (no swing space needed)', x3 + 10, y + 6, 21)
+    const gate = G.openings.find((o) => o.kind === 'gate')
+    T(`Car gate: ${fmt(gate.x2 - gate.x1)} rolling shutter (no swing space needed)`, x3 + 10, y + 6, 21)
 
     // column 4: legend, scale, verification
     T('LEGEND', lx, 52, 32)

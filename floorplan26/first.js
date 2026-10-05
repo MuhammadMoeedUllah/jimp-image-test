@@ -9,12 +9,13 @@ const HALL_Y = Y.FRONT + 4.5 //   166.5 corridor starts behind the front rooms
 const MASTER_Y = 207 //           master bedroom front face
 const DRESS_X = 90.5 //           walk-in dressing right face
 const BATH3_X = 250 //            bed 3 bath left face
+const XM = 146.5 //               bed 2 | bed 3 wall (on the GF bearing wall 146.5-155.5)
 
 const rooms = [
     { id: 'bath2', name: 'BATH 2', kind: 'bath', ...R(X.L, Y.F, X.BATHF, Y.BATHF) },
-    { id: 'bed2', name: 'BEDROOM 2', kind: 'room', ...R(X.BATHF + 4.5, Y.F, X.COL, Y.FRONT) },
+    { id: 'bed2', name: 'BEDROOM 2', kind: 'room', ...R(X.BATHF + 4.5, Y.F, XM, Y.FRONT) },
     { id: 'bed2B', partOf: 'bed2', kind: 'room', ...R(X.L, Y.BATHF + 4.5, X.BATHF + 4.5, Y.FRONT) },
-    { id: 'bed3', name: 'BEDROOM 3', kind: 'room', ...R(X.COLW, Y.F, BATH3_X - 4.5, Y.FRONT) },
+    { id: 'bed3', name: 'BEDROOM 3', kind: 'room', ...R(XM + EXT, Y.F, BATH3_X - 4.5, Y.FRONT) },
     { id: 'bed3B', partOf: 'bed3', kind: 'room', ...R(BATH3_X - 4.5, Y.BATHF + 4.5, X.R, Y.FRONT) },
     { id: 'bath3', name: 'BATH 3', kind: 'bath', ...R(BATH3_X, Y.F, X.R, Y.BATHF) },
     { id: 'hall', name: 'HALL', kind: 'hall', ...R(DRESS_X + 4.5, HALL_Y, X.R, MASTER_Y - 4.5) },
@@ -35,7 +36,7 @@ const walls = [
     { id: 'wFront', ...R(EXT, 0, X.R, Y.F) }, // over the porch on a beam
     { id: 'wB2a', ...R(X.BATHF, Y.F, X.BATHF + 4.5, Y.BATHF + 4.5) },
     { id: 'wB2b', ...R(X.L, Y.BATHF, X.BATHF, Y.BATHF + 4.5) },
-    { id: 'wMid', ...R(X.COL, Y.F, X.COLW, Y.FRONT) }, // bed 2 | bed 3 (over the 9" GF wall)
+    { id: 'wMid', ...R(XM, Y.F, XM + EXT, Y.FRONT) }, // bed 2 | bed 3 (over the 9" GF wall)
     { id: 'wB3a', ...R(BATH3_X - 4.5, Y.F, BATH3_X, Y.BATHF + 4.5) },
     { id: 'wB3b', ...R(BATH3_X, Y.BATHF, X.R, Y.BATHF + 4.5) },
     { id: 'wFR', ...R(X.L, Y.FRONT, X.R, HALL_Y) }, // front rooms | hall
@@ -53,17 +54,17 @@ const openings = [
 ]
 
 const doors = [
-    { id: 'D8', label: 'Bedroom 2', wall: 'wFR', a: 'hall', b: 'bed2', from: 100, to: 130, swingInto: 'bed2', hinge: 'start' },
-    { id: 'D9', label: 'Bath 2', wall: 'wB2b', a: 'bed2', b: 'bath2', from: 35, to: 59, swingInto: 'bath2', hinge: 'end' },
-    { id: 'D10', label: 'Bedroom 3', wall: 'wFR', a: 'hall', b: 'bed3', from: 182, to: 212, swingInto: 'bed3', hinge: 'start' },
-    { id: 'D11', label: 'Bath 3', wall: 'wB3a', a: 'bed3', b: 'bath3', from: 40, to: 64, swingInto: 'bath3', hinge: 'end' },
-    { id: 'D12', label: 'Master bedroom', wall: 'wMF', a: 'hall', b: 'master', from: 120, to: 150, swingInto: 'master', hinge: 'start' },
-    { id: 'D13', label: 'Master bath', wall: 'wMC', a: 'master', b: 'mbath', from: 48, to: 72, swingInto: 'mbath', hinge: 'end' },
-    { id: 'D14', label: 'Study / prayer', wall: 'wSF', a: 'hall', b: 'study', from: 186, to: 216, swingInto: 'study', hinge: 'start' },
+    { id: 'D6', label: 'Bedroom 2', wall: 'wFR', a: 'hall', b: 'bed2', from: 96, to: 126, swingInto: 'bed2', hinge: 'start' },
+    { id: 'D7', label: 'Bath 2', wall: 'wB2a', a: 'bed2', b: 'bath2', from: 40, to: 64, swingInto: 'bath2', hinge: 'end' },
+    { id: 'D8', label: 'Bedroom 3', wall: 'wFR', a: 'hall', b: 'bed3', from: 182, to: 212, swingInto: 'bed3', hinge: 'start' },
+    { id: 'D9', label: 'Bath 3', wall: 'wB3a', a: 'bed3', b: 'bath3', from: 40, to: 64, swingInto: 'bath3', hinge: 'end' },
+    { id: 'D10', label: 'Master bedroom', wall: 'wMF', a: 'hall', b: 'master', from: 120, to: 150, swingInto: 'master', hinge: 'start' },
+    { id: 'D11', label: 'Master bath', wall: 'wMC', a: 'master', b: 'mbath', from: 48, to: 72, swingInto: 'mbath', hinge: 'end' },
+    { id: 'D12', label: 'Study / prayer', wall: 'wSF', a: 'hall', b: 'study', from: 186, to: 216, swingInto: 'study', hinge: 'start' },
 ]
 
 const windows = [
-    { id: 'W7', label: 'Bedroom 2 to street (jaali)', wall: 'wFront', from: 95, to: 155 },
+    { id: 'W7', label: 'Bedroom 2 to street (jaali)', wall: 'wFront', from: 80, to: 140 },
     { id: 'W8', label: 'Bath 2 to street (high, frosted)', wall: 'wFront', from: 24, to: 48 },
     { id: 'W9', label: 'Bedroom 3 to street (jaali)', wall: 'wFront', from: 185, to: 235 },
     { id: 'W10', label: 'Bath 3 to street (high, frosted)', wall: 'wFront', from: 266, to: 290 },
@@ -74,19 +75,18 @@ const windows = [
 
 const items = [
     // bedroom 2: 6'-0" x 6'-6" bed, head on the party wall with bed 3
-    { id: 'b2Bed', type: 'bed', room: 'bed2', head: 'E', ...R(91, 51, 169, 123) },
-    { id: 'b2Side1', type: 'sidetable', room: 'bed2', ...R(151, 33, 169, 51) },
-    { id: 'b2Side2', type: 'sidetable', room: 'bed2', ...R(151, 123, 169, 141) },
-    { id: 'b2Ward', type: 'wardrobe', room: 'bed2', tall: true, ...R(9, 138, 69, 162) },
-    // bath 2 (stacked over the guest bath)
+    { id: 'b2Bed', type: 'bed', room: 'bed2', head: 'S', ...R(9, 84, 69, 162) }, // 5'-0" x 6'-6" against the party wall
+    { id: 'b2Side1', type: 'sidetable', room: 'bed2', ...R(69, 144, 87, 162) },
+    { id: 'b2Ward', type: 'wardrobe', room: 'bed2', tall: true, ...R(122.5, 45, 146.5, 117) }, // 3 ft back so it never shades W7
+    // bath 2 (stacked over the ground-floor bedroom bath)
     { id: 'b2Wc', type: 'wc', room: 'bath2', facing: 'S', ...R(12, 47, 30, 75) },
     { id: 'b2Basin', type: 'basin', room: 'bath2', ...R(12, 9, 32, 25) },
     { id: 'b2Shower', type: 'shower', room: 'bath2', ...R(33, 9, 63, 39) },
     // bedroom 3: 5'-0" x 6'-6" bed, wardrobe, study desk under the window
     { id: 'b3Bed', type: 'bed', room: 'bed3', head: 'S', ...R(250, 84, 304, 162) },
     { id: 'b3Side', type: 'sidetable', room: 'bed3', ...R(228, 144, 246, 162) },
-    { id: 'b3Ward', type: 'wardrobe', room: 'bed3', tall: true, ...R(178, 30, 202, 102) },
-    { id: 'b3Desk', type: 'desk', room: 'bed3', ...R(204, 9, 244, 29) },
+    { id: 'b3Ward', type: 'wardrobe', room: 'bed3', tall: true, ...R(155.5, 30, 179.5, 102) },
+    { id: 'b3Desk', type: 'desk', room: 'bed3', ...R(184, 9, 224, 29) },
     // bath 3
     { id: 'b3Wc', type: 'wc', room: 'bath3', facing: 'S', ...R(283, 47, 301, 75) },
     { id: 'b3Basin', type: 'basin', room: 'bath3', ...R(282, 9, 302, 25) },
@@ -109,12 +109,12 @@ const items = [
 
 const START = { name: 'stair arrival', x: 286, y: 205 }
 const targets = [
-    { name: 'bedroom 2: bed, window side', x: 130, y: 30 },
-    { name: 'bedroom 2: bed, door side', x: 120, y: 147 },
-    { name: 'bedroom 2: wardrobe', x: 45, y: 120 },
+    { name: 'bedroom 2: bed side', x: 90, y: 120 },
+    { name: 'bedroom 2: window', x: 105, y: 40 },
+    { name: 'bedroom 2: wardrobe', x: 108, y: 81 },
     { name: 'bath 2', x: 51, y: 52 },
     { name: 'bedroom 3: bed side', x: 235, y: 120 },
-    { name: 'bedroom 3: desk', x: 224, y: 45 },
+    { name: 'bedroom 3: desk', x: 204, y: 45 },
     { name: 'bath 3', x: 262, y: 52 },
     { name: 'master: bed, door side', x: 100, y: 219 },
     { name: 'master: bed, court side', x: 60, y: 313 },
@@ -124,7 +124,7 @@ const targets = [
 ]
 
 const chains = {
-    'FF x through bedroom 2 / bedroom 3': [[EXT, 'wall'], [160, 'bed 2 + bath'], [EXT, 'wall'], [126, 'bed 3 + bath'], [EXT, 'wall']],
+    'FF x through bedroom 2 / bedroom 3': [[EXT, 'wall'], [137.5, 'bed 2 + bath'], [EXT, 'wall'], [148.5, 'bed 3 + bath'], [EXT, 'wall']],
     'FF x through master / hall / stair': [[EXT, 'wall'], [164.5, 'master'], [4.5, 'wall'], [45.5, 'hall'], [4.5, 'rail'], [76, 'stair'], [EXT, 'wall']],
     'FF x through master bath / court / study': [[EXT, 'wall'], [68.5, 'master bath'], [4.5, 'wall'], [91.5, 'court'], [4.5, 'wall'], [126, 'study'], [EXT, 'wall']],
     'FF y through bath 2 / bed 2 / dressing / master / bath': [[EXT, 'wall'], [66, 'bath 2'], [4.5, 'wall'], [82.5, 'bed 2'], [4.5, 'wall'], [40.5, 'dressing'], [118.5, 'master'], [4.5, 'wall'], [93, 'master bath'], [EXT, 'wall']],

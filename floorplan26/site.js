@@ -22,7 +22,7 @@ const STAIR = { RISERS: 18, RISER: 7, TREADS_PER_FLIGHT: 8, TREAD: 10, FLIGHT_W:
 // one grid for every floor, so bearing walls and wet areas stack
 const X = {
     L: EXT, //          9     inside face of left wall
-    BATHF: 63, //       front-left wet stack (guest bath / bed 2 bath) right face
+    BATHF: 63, //       front-left wet stack (bedroom bath / bed 2 bath) right face
     COL: 169, //        left column right face (13'-4" clear)
     COLW: 178, //       right column starts (9" bearing wall 169-178)
     FOY: 223.5, //      foyer / hall right face

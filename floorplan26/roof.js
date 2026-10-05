@@ -38,9 +38,9 @@ const openings = [
 ]
 
 const doors = [
-    { id: 'D15', label: 'Mumty to front terrace', wall: 'mF', a: 'landing', b: 'terrace', from: 186, to: 219, swingInto: 'landing', hinge: 'start' },
-    { id: 'D16', label: 'Store passage to family terrace', wall: 'mL', a: 'store', b: 'terrace', from: 270, to: 303, swingInto: 'store', hinge: 'end' },
-    { id: 'D17', label: 'Store passage to laundry yard', wall: 'mRr', a: 'store', b: 'drying', from: 186, to: 216, swingInto: 'drying', hinge: 'start' },
+    { id: 'D13', label: 'Mumty to front terrace', wall: 'mF', a: 'landing', b: 'terrace', from: 186, to: 219, swingInto: 'landing', hinge: 'start' },
+    { id: 'D14', label: 'Store passage to family terrace', wall: 'mL', a: 'store', b: 'terrace', from: 270, to: 303, swingInto: 'store', hinge: 'end' },
+    { id: 'D15', label: 'Store passage to laundry yard', wall: 'mRr', a: 'store', b: 'drying', from: 186, to: 216, swingInto: 'drying', hinge: 'start' },
 ]
 
 const windows = [

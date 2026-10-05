@@ -12,7 +12,7 @@ const { C } = D
 const FILL = {
     room: 0xffffffff, drawing: 0xf3f7eeff, kitchen: 0xfff8ecff, bath: 0xe6f2f7ff, porch: 0xeef1f4ff,
     foyer: 0xfbf7f0ff, hall: 0xfbf7f0ff, stair: 0xf4f0f8ff, court: 0xe2f1dcff, void: 0xe8f2e4ff,
-    terrace: 0xf5f2ecff, utility: 0xfff8ecff,
+    terrace: 0xf5f2ecff, utility: 0xfff8ecff, alley: 0xf1ece2ff,
 }
 
 const renderFloor = (floor, S, spec) => {
@@ -44,7 +44,13 @@ const renderFloor = (floor, S, spec) => {
             D.line(img, px(o.x2) - 3, py(o.y2), px(o.x2) - 3, py(o.y1), C.ink, 2)
         }
     }
-    for (const w of floor.walls) rect(w, C.wall)
+    for (const w of floor.walls) {
+        if (!w.low) { rect(w, C.wall); continue }
+        // low jaali divider: light masonry with perforations
+        rect(w, 0xc9b28cff)
+        const cx = (px(w.x1) + px(w.x2)) / 2
+        for (let y = py(w.y2) + 8; y < py(w.y1) - 4; y += 14) D.ellipse(img, cx, y, 3, 3, 0x7a5f3aff, 2, 0xf1ece2ff)
+    }
 
     // stair: dog-leg in the box, flight A on the left rising away from the
     // road, landing at the rear, flight B returning

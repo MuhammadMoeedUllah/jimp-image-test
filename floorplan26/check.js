@@ -14,7 +14,7 @@ const RES = 2
 const overlaps = (a, b) => a.x1 < b.x2 && b.x1 < a.x2 && a.y1 < b.y2 && b.y1 < a.y2
 const isVertical = (w) => w.y2 - w.y1 > w.x2 - w.x1
 const owner = (e) => e && (e.partOf || e.id)
-const WALKABLE = new Set(['room', 'drawing', 'kitchen', 'bath', 'porch', 'foyer', 'court', 'hall', 'terrace', 'balcony', 'utility'])
+const WALKABLE = new Set(['room', 'drawing', 'kitchen', 'bath', 'porch', 'alley', 'foyer', 'court', 'hall', 'terrace', 'balcony', 'utility'])
 
 const makeZones = (floor) => {
     const wallById = Object.fromEntries(floor.walls.map((w) => [w.id, w]))
@@ -156,9 +156,10 @@ const checkFloor = (floor) => {
                 if (overlaps(z.approach, it)) errors.push(`${it.id} blocks the approach to ${d.id}`)
             }
         }
+        // a tall item anywhere in the 3 ft in front of the glass shades it
         for (const w of floor.windows) {
             const wall = wallById[w.wall]
-            const zone = isVertical(wall) ? { x1: wall.x1 - 6, x2: wall.x2 + 6, y1: w.from, y2: w.to } : { x1: w.from, x2: w.to, y1: wall.y1 - 6, y2: wall.y2 + 6 }
+            const zone = isVertical(wall) ? { x1: wall.x1 - 36, x2: wall.x2 + 36, y1: w.from, y2: w.to } : { x1: w.from, x2: w.to, y1: wall.y1 - 36, y2: wall.y2 + 36 }
             for (const it of items.filter((t) => t.tall)) if (overlaps(zone, it)) errors.push(`${it.id} (tall) blocks ${w.id}`)
         }
         return `furniture: ${items.length} items at real size - inside their rooms, no overlaps, door swings / approaches / windows clear`
