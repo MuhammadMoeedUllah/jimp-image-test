@@ -1,5 +1,6 @@
 /**
- * Minimal raster primitives on top of Jimp (Jimp has no vector API).
+ * Minimal raster primitives on top of Jimp (Jimp has no vector API), plus a
+ * LabelLayer that refuses to place text on top of linework or other text.
  * All functions take PIXEL coordinates; modules convert plot inches -> px.
  */
 const Jimp = require('jimp')
@@ -9,19 +10,26 @@ const C = {
     ink: 0x1a1a1aff,
     wall: 0x2b2b2bff,
     dim: 0xb3261eff,
+    tag: 0x1f4e79ff,
     shop: 0xfdf3e1ff,
     room: 0xffffffff,
+    kitchen: 0xfff8ecff,
+    drawing: 0xf3f7eeff,
     porch: 0xeef1f4ff,
     bath: 0xe6f2f7ff,
     stair: 0xf4f0f8ff,
-    shaft: 0xe7f3e3ff,
+    shaft: 0xe2f1dcff,
     setback: 0xf2f2f2ff,
-    glass: 0x9fd3f0ff,
+    glass: 0x5aa9d6ff,
     grey: 0x8a8a8aff,
+    furn: 0x6b6b6bff,
+    furnFill: 0xffffffff,
     light: 0xd0d0d0ff,
+    road: 0xc9ccd1ff,
 }
 
 const rgba = (c) => [(c >>> 24) & 255, (c >>> 16) & 255, (c >>> 8) & 255, c & 255]
+const lum = (r, g, b) => 0.299 * r + 0.587 * g + 0.114 * b
 
 const blank = (w, h, color = C.paper) => new Jimp(Math.round(w), Math.round(h), color)
 
@@ -67,7 +75,7 @@ const strokeRect = (img, x1, y1, x2, y2, color, w = 1, dash = null) => {
 
 /** arc centred at (cx,cy), radius r, from angle a0 to a1 (radians) */
 const arc = (img, cx, cy, r, a0, a1, color, w = 1) => {
-    const steps = Math.ceil(Math.abs(a1 - a0) * r * 2)
+    const steps = Math.ceil(Math.abs(a1 - a0) * r * 2) + 1
     for (let s = 0; s <= steps; s++) {
         const a = a0 + ((a1 - a0) * s) / steps
         const x = cx + r * Math.cos(a)
@@ -77,22 +85,37 @@ const arc = (img, cx, cy, r, a0, a1, color, w = 1) => {
     }
 }
 
+const ellipse = (img, cx, cy, rx, ry, color, w = 2, fill = null) => {
+    if (fill !== null) {
+        for (let y = -ry; y <= ry; y++) {
+            const half = rx * Math.sqrt(Math.max(0, 1 - (y * y) / (ry * ry)))
+            fillRect(img, cx - half, cy + y, cx + half, cy + y + 1, fill)
+        }
+    }
+    const steps = Math.ceil(2 * Math.PI * Math.max(rx, ry) * 2)
+    for (let s = 0; s < steps; s++) {
+        const a = (2 * Math.PI * s) / steps
+        const x = cx + rx * Math.cos(a)
+        const y = cy + ry * Math.sin(a)
+        fillRect(img, x - w / 2, y - w / 2, x + w / 2, y + w / 2, color)
+    }
+}
+
 /** 45° hatch clipped to a rectangle */
-const hatch = (img, x1, y1, x2, y2, color, gap = 10, dir = 1) => {
+const hatch = (img, x1, y1, x2, y2, color, gap = 10) => {
     const w = x2 - x1
     const h = y2 - y1
     for (let k = -h; k < w; k += gap) {
         for (let t = 0; t < h; t += 0.5) {
-            const x = dir > 0 ? x1 + k + t : x2 - k - t
-            const y = y1 + t
-            if (x >= x1 && x < x2) setPx(img, x, y, color)
+            const x = x1 + k + t
+            if (x >= x1 && x < x2) setPx(img, x, y1 + t, color)
         }
     }
 }
 
-const arrowHead = (img, x, y, angle, color, size = 14) => {
-    for (const da of [Math.PI - 0.4, Math.PI + 0.4]) {
-        line(img, x, y, x + size * Math.cos(angle + da), y + size * Math.sin(angle + da), color, 2)
+const arrowHead = (img, x, y, angle, color, size = 14, w = 3) => {
+    for (const da of [Math.PI - 0.45, Math.PI + 0.45]) {
+        line(img, x, y, x + size * Math.cos(angle + da), y + size * Math.sin(angle + da), color, w)
     }
 }
 
@@ -103,8 +126,8 @@ const loadFonts = async () => {
 }
 
 /**
- * Render text into its own image at `size` px tall (downsampled from the
- * 64px bitmap font for clean anti-aliasing), optionally tinted.
+ * Render text into its own image at `size` px cap-to-descender height
+ * (downsampled from the 64px bitmap font for clean anti-aliasing).
  */
 const textImage = (str, size, color = C.ink) => {
     const font = fonts.black
@@ -122,13 +145,36 @@ const textImage = (str, size, color = C.ink) => {
     return img
 }
 
+/** tight bounding box of the visible glyph pixels */
+const inkBox = (t) => {
+    const { width, height, data } = t.bitmap
+    let x1 = width
+    let y1 = height
+    let x2 = -1
+    let y2 = -1
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+            if (data[(y * width + x) * 4 + 3] > 40) {
+                if (x < x1) x1 = x
+                if (x > x2) x2 = x
+                if (y < y1) y1 = y
+                if (y > y2) y2 = y
+            }
+        }
+    }
+    return x2 < 0 ? { x1: 0, y1: 0, x2: width, y2: height } : { x1, y1, x2: x2 + 1, y2: y2 + 1 }
+}
+
 /** draw text centred on (cx, cy); rotate = 90 for vertical (reads bottom-up) */
 const text = (img, str, cx, cy, size, color = C.ink, rotate = 0, bg = null) => {
     const t = textImage(str, size, color)
     if (rotate) t.rotate(rotate, false)
     const x = Math.round(cx - t.bitmap.width / 2)
     const y = Math.round(cy - t.bitmap.height / 2)
-    if (bg !== null) fillRect(img, x + 2, y + 2, x + t.bitmap.width - 2, y + t.bitmap.height - 2, bg)
+    if (bg !== null) {
+        const b = inkBox(t)
+        fillRect(img, x + b.x1 - 4, y + b.y1 - 3, x + b.x2 + 4, y + b.y2 + 3, bg)
+    }
     img.composite(t, x, y)
     return { w: t.bitmap.width, h: t.bitmap.height }
 }
@@ -139,4 +185,70 @@ const textLeft = (img, str, x, cy, size, color = C.ink) => {
     return { w: t.bitmap.width, h: t.bitmap.height }
 }
 
-module.exports = { C, blank, setPx, fillRect, line, strokeRect, arc, hatch, arrowHead, loadFonts, text, textLeft, textImage }
+/**
+ * Collects every label drawn on one image and reports any label that
+ * - leaves the image,
+ * - overlaps another label, or
+ * - sits on linework (walls, furniture, door swings, dimension lines),
+ * judged against a snapshot taken before the first label was placed.
+ */
+class LabelLayer {
+    constructor(img, name) {
+        this.img = img
+        this.name = name
+        this.boxes = []
+        this.issues = []
+        this.base = null
+    }
+
+    freeze() {
+        this.base = this.img.clone()
+    }
+
+    darkPixels(b) {
+        const { width, height, data } = this.base.bitmap
+        let n = 0
+        for (let y = Math.max(0, b.y1); y < Math.min(height, b.y2); y++) {
+            for (let x = Math.max(0, b.x1); x < Math.min(width, b.x2); x++) {
+                const i = (y * width + x) * 4
+                if (lum(data[i], data[i + 1], data[i + 2]) < 170) n++
+            }
+        }
+        return n
+    }
+
+    /**
+     * opts: rotate (deg), bg (mask colour), allowOver (may sit on linework),
+     *       anchor 'center' | 'left'
+     */
+    place(str, cx, cy, size, color = C.ink, opts = {}) {
+        if (!this.base) this.freeze()
+        const t = textImage(str, size, color)
+        if (opts.rotate) t.rotate(opts.rotate, false)
+        const ib = inkBox(t)
+        const x0 = Math.round(opts.anchor === 'left' ? cx - ib.x1 : cx - (ib.x1 + ib.x2) / 2)
+        const y0 = Math.round(cy - (ib.y1 + ib.y2) / 2)
+        const pad = 3
+        const box = { x1: x0 + ib.x1 - pad, y1: y0 + ib.y1 - pad, x2: x0 + ib.x2 + pad, y2: y0 + ib.y2 + pad, str }
+        const { width, height } = this.img.bitmap
+        if (box.x1 < 0 || box.y1 < 0 || box.x2 > width || box.y2 > height) this.issues.push(`${this.name}: "${str}" runs off the image`)
+        for (const b of this.boxes) {
+            if (box.x1 < b.x2 && b.x1 < box.x2 && box.y1 < b.y2 && b.y1 < box.y2) this.issues.push(`${this.name}: "${str}" overlaps "${b.str}"`)
+        }
+        if (!opts.allowOver) {
+            const n = this.darkPixels(box)
+            if (n > 0) this.issues.push(`${this.name}: "${str}" sits on ${n} px of linework`)
+        }
+        this.boxes.push(box)
+        if (opts.bg !== undefined && opts.bg !== null) fillRect(this.img, box.x1 + 1, box.y1 + 1, box.x2 - 1, box.y2 - 1, opts.bg)
+        this.img.composite(t, x0, y0)
+        return box
+    }
+
+    /** register an area that labels must not overlap (e.g. a drawn tag) */
+    reserve(box, str) {
+        this.boxes.push({ ...box, str })
+    }
+}
+
+module.exports = { C, rgba, lum, blank, setPx, fillRect, line, strokeRect, arc, ellipse, hatch, arrowHead, loadFonts, text, textLeft, textImage, inkBox, LabelLayer }

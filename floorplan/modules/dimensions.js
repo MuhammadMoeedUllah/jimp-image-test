@@ -1,99 +1,103 @@
 /**
  * MODULE 3: dimension strings. Each strip is generated straight from the
  * chains in geometry.js, so a drawn dimension can never disagree with the
- * geometry that was validated.
+ * geometry that was validated. Text placement is collision-checked.
  */
 const G = require('../geometry')
 const D = require('../draw')
 const { fmt } = require('../units')
 
-const TIER = 78 // px between dimension tiers
-const TICK = 12
+const TIER = 110 // px between dimension tiers
+const TICK = 11
+const MAIN = 30 // px text for segments that fit
+const SMALL = 24 // px text for wall thicknesses (staggered outside the line)
 
-/**
- * Horizontal dimension strip.
- * tiers: [{ chain, start }] drawn from the plot outwards.
- * side: 'top' (tiers stack upward) or 'bottom'.
- */
-const hStrip = (S, tiers, side, extraTitles = []) => {
-    const h = TIER * tiers.length + 20
-    const img = D.blank(G.PLOT_W * S, h)
-    tiers.forEach(({ chain, start = 0, title }, t) => {
-        const y = side === 'top' ? h - 20 - TIER * t - TIER / 2 + 10 : 20 + TIER * t + TIER / 2 - 10
-        let x = start
-        D.line(img, x * S, y, (start + G.sum(chain)) * S, y, D.C.dim, 2)
-        let small = 0
-        const tick = (xx) => D.line(img, xx * S - TICK, y + TICK, xx * S + TICK, y - TICK, D.C.dim, 3)
-        tick(x)
-        for (const [, v] of chain) {
-            const cx = (x + v / 2) * S
-            const lbl = fmt(v)
-            const fits = v * S > 22 * lbl.length * 0.62 + 12
-            if (fits) D.text(img, lbl, cx, y - 20, 24, D.C.dim)
-            else {
-                // small segment (wall): stagger the label outside the line
-                const dy = side === 'top' ? (small % 2 ? -46 : -24) : (small % 2 ? 44 : 22)
-                D.text(img, lbl, cx, y + (side === 'top' ? dy : dy), 17, D.C.dim)
-                small++
-            }
-            x += v
-            tick(x)
-        }
-        if (title) extraTitles.push({ title, y })
-    })
-    return img
+const labelWidth = (str, size) => {
+    const t = D.textImage(str, size)
+    const b = D.inkBox(t)
+    return b.x2 - b.x1
 }
 
-/** vertical strip = horizontal strip rotated (dimension text reads bottom-up) */
-const vStrip = (S, tiers, side) => {
-    const H = G.PLOT_H * S
-    const w = TIER * tiers.length + 20
-    const img = D.blank(w, H)
-    tiers.forEach(({ chain, start = 0 }, t) => {
-        const x = side === 'left' ? w - 20 - TIER * t - TIER / 2 + 10 : 20 + TIER * t + TIER / 2 - 10
-        const py = (yy) => H - yy * S
-        let y = start
-        D.line(img, x, py(y), x, py(start + G.sum(chain)), D.C.dim, 2)
-        const tick = (yy) => D.line(img, x - TICK, py(yy) + TICK, x + TICK, py(yy) - TICK, D.C.dim, 3)
-        tick(y)
-        let small = 0
-        for (const [, v] of chain) {
-            const cy = py(y + v / 2)
-            const lbl = fmt(v)
-            const fits = v * S > 22 * lbl.length * 0.62 + 12
-            const dir = side === 'left' ? -1 : 1
-            if (fits) D.text(img, lbl, x + dir * 20, cy, 24, D.C.dim, 90)
-            else {
-                D.text(img, lbl, x + dir * (small % 2 ? 46 : 24) * (side === 'left' ? 1 : 1), cy, 17, D.C.dim, 90)
-                small++
+/**
+ * Generic strip along an axis. `len` = strip length in px along the axis.
+ * place(u, v) maps (along, across) to image coords; rotate for vertical.
+ */
+const strip = (S, tiers, opts) => {
+    const { vertical, outward } = opts // outward: +1 tiers stack away from plot towards +across
+    const depth = TIER * tiers.length + 60
+    const len = (vertical ? G.PLOT_H : G.PLOT_W) * S
+    const img = vertical ? D.blank(depth, len) : D.blank(len, depth)
+    // across position of tier t (0 = nearest the plot)
+    const across = (t) => (outward > 0 ? 40 + TIER * t + TIER / 2 : depth - 40 - TIER * t - TIER / 2)
+    // along position: horizontal strips run left->right; vertical strips run bottom->top
+    const along = (inches) => (vertical ? len - inches * S : inches * S)
+    const XY = (u, v) => (vertical ? [v, u] : [u, v])
+    const lines = []
+    tiers.forEach(({ chain }, t) => {
+        const v = across(t)
+        lines.push(v)
+        const total = G.sum(chain)
+        D.line(img, ...XY(along(0), v), ...XY(along(total), v), D.C.dim, 2)
+        let pos = 0
+        const tick = (p) => {
+            const u = along(p)
+            const [x, y] = XY(u, v)
+            D.line(img, x - TICK, y + TICK, x + TICK, y - TICK, D.C.dim, 3)
+        }
+        tick(0)
+        for (const [, val] of chain) { pos += val; tick(pos) }
+    })
+    const L = new D.LabelLayer(img, opts.name)
+    L.freeze()
+    // every label of a tier sits on the side of its line away from the plot,
+    // so the band between two lines only ever holds one tier's text; wall
+    // thicknesses that do not fit are staggered when two are adjacent
+    const away = (k) => outward * k
+    tiers.forEach(({ chain }, t) => {
+        const v = across(t)
+        let pos = 0
+        let prevSmallLevel = 0
+        for (const [, val] of chain) {
+            const u = (along(pos) + along(pos + val)) / 2
+            const lbl = fmt(val)
+            const fits = val * S > labelWidth(lbl, MAIN) + 34
+            const rot = vertical ? 90 : 0
+            if (fits) {
+                const [x, y] = XY(u, v + away(25))
+                L.place(lbl, x, y, MAIN, D.C.dim, { rotate: rot })
+                prevSmallLevel = 0
+            } else {
+                const level = prevSmallLevel === 1 ? 2 : 1
+                const [x, y] = XY(u, v + away(level === 1 ? 28 : 54))
+                L.place(lbl, x, y, SMALL, D.C.dim, { rotate: rot })
+                prevSmallLevel = level
             }
-            y += v
-            tick(y)
+            pos += val
         }
     })
-    return img
+    return { img, labels: L, lines }
 }
 
 const renderDimensions = (S) => {
     const c = G.chains
-    const top = hStrip(S, [
-        { chain: c['Section x through master / shaft / baths'].chain },
+    const top = strip(S, [
+        { chain: c['x through master / shaft / baths'].chain },
         { chain: [['commercial band', 187], ['residence', 317]] },
         { chain: [['plot', G.PLOT_W]] },
-    ], 'top')
-    const bottom = hStrip(S, [
-        { chain: c['Section x through kitchen / stair / porch'].chain },
-    ], 'bottom')
-    const left = vStrip(S, [
+    ], { vertical: false, outward: -1, name: 'dims-top' })
+    const bottom = strip(S, [
+        { chain: c['x through stair / kitchen / porch'].chain },
+    ], { vertical: false, outward: 1, name: 'dims-bottom' })
+    const left = strip(S, [
         { chain: c['Shop frontage along 36-ft road'].chain },
         { chain: [['plot', G.PLOT_H]] },
-    ], 'left')
-    const right = vStrip(S, [
-        { chain: c['Section y through porch / bedroom 2 / baths'].chain },
-        { chain: c['Section y through kitchen / lounge / master'].chain },
+    ], { vertical: true, outward: -1, name: 'dims-left' })
+    const right = strip(S, [
+        { chain: c['y through porch / drawing / baths'].chain },
+        { chain: c['y through kitchen / lounge / master'].chain },
         { chain: [['plot', G.PLOT_H]] },
-    ], 'right')
+    ], { vertical: true, outward: 1, name: 'dims-right' })
     return { top, bottom, left, right }
 }
 
-module.exports = { renderDimensions }
+module.exports = { renderDimensions, TIER }

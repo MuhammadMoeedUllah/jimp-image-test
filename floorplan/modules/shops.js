@@ -15,16 +15,18 @@ const renderShops = (S) => {
     drawWindows(R)
     drawDoors(R)
     const { img, px, py } = R
+    const L = new D.LabelLayer(img, 'shops')
+    L.freeze()
     for (const s of G.rooms.filter((r) => r.kind === 'shop')) {
         const cx = px((s.x1 + s.x2) / 2)
         const cy = py((s.y1 + s.y2) / 2)
-        D.text(img, s.name, cx, cy - 34, 40)
-        D.text(img, `${fmt(s.y2 - s.y1)} front`, cx, cy + 12, 26, D.C.dim)
-        D.text(img, `x ${fmt(s.x2 - s.x1)} deep`, cx, cy + 44, 26, D.C.dim)
+        L.place(s.name, cx, cy - 46, 52)
+        L.place(`${fmt(s.y2 - s.y1)} frontage`, cx, cy + 14, 32, D.C.dim)
+        L.place(`x ${fmt(s.x2 - s.x1)} clear depth`, cx, cy + 56, 32, D.C.dim)
     }
-    // shutter callout
-    D.text(img, 'SHUTTER', px(G.keys.sx[1] + 4.5), py(G.keys.sy[1] + 49.5), 16, D.C.ink, 90, D.C.shop)
-    return img
+    const s1 = G.rooms.find((r) => r.id === 'shop1')
+    L.place('ROLLING SHUTTER', px((G.keys.sx[1] + G.keys.sx[2]) / 2), py((s1.y1 + s1.y2) / 2), 22, D.C.ink, { rotate: 90, bg: D.C.shop, allowOver: true })
+    return { img, labels: L }
 }
 
 module.exports = { renderShops, BAND_X2 }
