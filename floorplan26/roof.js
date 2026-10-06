@@ -44,7 +44,7 @@ const doors = [
 ]
 
 const windows = [
-    { id: 'W14', label: 'Mumty to front terrace', wall: 'mF', from: 240, to: 290 },
+    { id: 'W13', label: 'Mumty to front terrace', wall: 'mF', from: 240, to: 290 },
 ]
 
 const items = [

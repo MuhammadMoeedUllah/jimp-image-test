@@ -21,12 +21,12 @@ const specs = require('./render/specs')
 const S = 4
 const OUT = path.join(__dirname, '..', 'output')
 const FLOORS = [
-    { mod: require('./ground'), spec: specs.GF, subtitle: 'side alley, bedroom suite, family living, cooking', road: 'ROAD  -  26\'-1" FRONT  -  CAR GATE + ENTRY' },
+    { mod: require('./ground'), spec: specs.GF, subtitle: 'front alley behind a jaali wall, car porch, bedroom suite, family living', road: 'ROAD  -  26\'-1" FRONT  -  CAR GATE + ENTRY' },
     { mod: require('./first'), spec: specs.FF, subtitle: 'three bedrooms, each with its own bath', road: 'street side' },
     { mod: require('./roof'), spec: specs.RF, subtitle: 'terrace, laundry, solar, water tank', road: 'street side' },
 ]
 const CH = {
-    GF: { top: 'GF x through bath / court / kitchen', bottom: 'GF x through bedroom / alley / porch', left: 'GF y through bath / bedroom / lounge / bath', right: 'GF y through porch / stair / kitchen' },
+    GF: { top: 'GF x through bath / court / kitchen', bottom: 'GF x through bath / bedroom / porch', left: 'GF y through alley / bath / bedroom / lounge / bath', right: 'GF y through porch / stair / kitchen' },
     FF: { top: 'FF x through master bath / court / study', bottom: 'FF x through bedroom 2 / bedroom 3', left: 'FF y through bath 2 / bed 2 / dressing / master / bath', right: 'FF y through bed 3 / hall / stair / study' },
     RF: { top: 'RF x through terrace / mumty', bottom: null, left: null, right: 'RF y through terraces / mumty / drying yard' },
 }

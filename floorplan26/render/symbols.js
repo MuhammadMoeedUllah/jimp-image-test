@@ -122,11 +122,28 @@ const drawItem = (R, it) => {
         break
     }
     case 'wc':
+        if (it.facing === 'E' || it.facing === 'W') {
+            // cistern against a side wall, bowl pointing into the room
+            const tx = it.facing === 'E' ? X1 : X2 - 8 * S
+            D.fillRect(img, tx, Y1, tx + 8 * S, Y2, 0xffffffff)
+            D.strokeRect(img, tx, Y1, tx + 8 * S - 1, Y2 - 1, C.furn, 2)
+            const bx = it.facing === 'E' ? X1 + 8 * S + 9.5 * S : X2 - 8 * S - 9.5 * S
+            D.ellipse(img, bx, cy, 9.5 * S, 7.5 * S, C.furn, 2, 0xffffffff)
+            break
+        }
         // cistern against the wall on the plot +y side (drawn on top)
         D.fillRect(img, X1, Y1, X2, Y1 + 8 * S, 0xffffffff)
         D.strokeRect(img, X1, Y1, X2 - 1, Y1 + 8 * S, C.furn, 2)
         D.ellipse(img, cx, Y1 + 8 * S + 9.5 * S, 7.5 * S, 9.5 * S, C.furn, 2, 0xffffffff)
         break
+    case 'banquette': {
+        // built-in upholstered bench: seat + back strip, no arms
+        box(0xffffffff, 2)
+        const [a, b, c, d] = backStrip(6)
+        D.fillRect(img, a, b, c, d, C.light)
+        D.strokeRect(img, a, b, c - 1, d - 1, C.furn, 2)
+        break
+    }
     case 'basin':
         box(0xffffffff, 2)
         D.ellipse(img, cx, cy, Math.max(4, W / 2 - 2.5 * S), Math.max(4, H / 2 - 3 * S), C.furn, 2)
@@ -173,10 +190,13 @@ const drawItem = (R, it) => {
         box(0xffffffff, 2)
         D.ellipse(img, cx, cy, W / 2 - 3 * S, H / 2 - 3 * S, C.furn, 2)
         break
-    case 'ac':
+    case 'ac': {
+        // condenser: fan circle fits the shorter side
         box(0xf0f0f0ff, 2)
-        D.ellipse(img, cx, cy, W / 2 - 3 * S, W / 2 - 3 * S, C.furn, 2)
+        const r = Math.min(W, H) / 2 - 2 * S
+        D.ellipse(img, cx, cy, r, r, C.furn, 2)
         break
+    }
     default:
         box()
     }

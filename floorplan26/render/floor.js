@@ -45,11 +45,16 @@ const renderFloor = (floor, S, spec) => {
         }
     }
     for (const w of floor.walls) {
-        if (!w.low) { rect(w, C.wall); continue }
-        // low jaali divider: light masonry with perforations
-        rect(w, 0xc9b28cff)
-        const cx = (px(w.x1) + px(w.x2)) / 2
-        for (let y = py(w.y2) + 8; y < py(w.y1) - 4; y += 14) D.ellipse(img, cx, y, 3, 3, 0x7a5f3aff, 2, 0xf1ece2ff)
+        if (!w.low && !w.jaali) { rect(w, C.wall); continue }
+        // jaali (perforated brick) wall: light masonry with a row of perforations
+        rect(w, w.jaali ? 0xa98a62ff : 0xc9b28cff)
+        if (isVertical(w)) {
+            const cx = (px(w.x1) + px(w.x2)) / 2
+            for (let y = py(w.y2) + 8; y < py(w.y1) - 4; y += 14) D.ellipse(img, cx, y, 3, 3, 0x7a5f3aff, 2, 0xf1ece2ff)
+        } else {
+            const cy = (py(w.y1) + py(w.y2)) / 2
+            for (let x = px(w.x1) + 8; x < px(w.x2) - 4; x += 14) D.ellipse(img, x, cy, 3, 3, 0x5a4328ff, 2, 0xf1ece2ff)
+        }
     }
 
     // stair: dog-leg in the box, flight A on the left rising away from the
@@ -159,7 +164,7 @@ const renderFloor = (floor, S, spec) => {
     const streetTags = [] // openings in the street wall are tagged outside the plan
     for (const o of [...floor.doors, ...floor.windows]) {
         if (spec.noTags && spec.noTags.includes(o.id)) continue
-        if (o.wall === 'wFront' || o.wall === 'wGate') { streetTags.push({ id: o.id, x: (o.from + o.to) / 2 }); continue }
+        if (['wFront', 'wGate', 'wBound'].includes(o.wall)) { streetTags.push({ id: o.id, x: (o.from + o.to) / 2 }); continue }
         let pos = spec.tags && spec.tags[o.id]
         if (!pos) {
             const w = wallById[o.wall]
