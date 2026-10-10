@@ -42,6 +42,8 @@ const makeZones = (floor) => {
 }
 
 const checkFloor = (floor) => {
+    const PW = floor.W || S.PLOT_W
+    const PH = floor.H || S.PLOT_H
     const errors = []
     const report = []
     const tag = floor.id
@@ -55,15 +57,15 @@ const checkFloor = (floor) => {
 
     // 1. chains
     for (const [name, chain] of Object.entries(floor.chains || {})) {
-        const total = name.includes(' x ') || name.startsWith(`${tag} x`) ? S.PLOT_W : S.PLOT_H
+        const total = name.includes(' x ') || name.startsWith(`${tag} x`) ? PW : PH
         const s = chain.reduce((a, [v]) => a + v, 0)
         if (s !== total) errors.push(`${name}: sums to ${fmt(s)}, expected ${fmt(total)}`)
         else report.push(`OK   ${name}: ${chain.map(([v]) => fmt(v)).join(' + ')} = ${fmt(s)}`)
     }
 
     // 2. tiling
-    const W = S.PLOT_W * RES
-    const H = S.PLOT_H * RES
+    const W = PW * RES
+    const H = PH * RES
     const grid = new Array(W * H).fill(null)
     const all = [
         ...floor.rooms.map((r) => ({ ...r, type: 'room' })),
@@ -88,7 +90,7 @@ const checkFloor = (floor) => {
             const i = grid.findIndex((c) => !c)
             errors.push(`${gaps / RES / RES} sq in unassigned, first at (${fmt((i % W) / RES)}, ${fmt(Math.floor(i / W) / RES)})`)
         }
-        return `tiling: ${all.length} rooms/walls/openings cover ${fmt(S.PLOT_W)} x ${fmt(S.PLOT_H)} exactly`
+        return `tiling: ${all.length} rooms/walls/openings cover ${fmt(PW)} x ${fmt(PH)} exactly`
     })
     const at = (x, y) => grid[Math.floor(y * RES) * W + Math.floor(x * RES)]
 
@@ -166,8 +168,8 @@ const checkFloor = (floor) => {
     })
 
     // 5. circulation
-    const CW = S.PLOT_W
-    const CH = S.PLOT_H
+    const CW = PW
+    const CH = PH
     const blocked = new Uint8Array(CW * CH)
     for (let y = 0; y < CH; y++) {
         for (let x = 0; x < CW; x++) {

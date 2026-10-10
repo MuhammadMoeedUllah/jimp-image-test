@@ -25,7 +25,7 @@ const textW = (str, size) => {
 const strip = (tiers, opts) => {
     const { vertical, outward, S, name } = opts
     const depth = TIER * tiers.length + 50
-    const len = (vertical ? S0.PLOT_H : S0.PLOT_W) * S
+    const len = (opts.len || (vertical ? S0.PLOT_H : S0.PLOT_W)) * S // plot inches along the strip
     const img = vertical ? D.blank(depth, len) : D.blank(len, depth)
     const across = (t) => (outward > 0 ? 34 + TIER * t + TIER / 2 : depth - 34 - TIER * t - TIER / 2)
     const along = (inch) => (vertical ? len - inch * S : inch * S)

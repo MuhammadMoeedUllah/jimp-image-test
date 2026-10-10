@@ -16,9 +16,11 @@ const FILL = {
 }
 
 const renderFloor = (floor, S, spec) => {
-    const img = D.blank(S0.PLOT_W * S, S0.PLOT_H * S)
+    const PW = floor.W || S0.PLOT_W
+    const PH = floor.H || S0.PLOT_H
+    const img = D.blank(PW * S, PH * S)
     const px = (x) => x * S
-    const py = (y) => (S0.PLOT_H - y) * S // road (y = 0) at the bottom of the drawing
+    const py = (y) => (PH - y) * S // road (y = 0) at the bottom of the drawing
     const R = { img, px, py, S }
     const rect = (r, color) => D.fillRect(img, px(r.x1), py(r.y2), px(r.x2), py(r.y1), color)
     const zones = makeZones(floor)
@@ -40,8 +42,13 @@ const renderFloor = (floor, S, spec) => {
             D.line(img, px(o.x1), my + S, px(o.x2), my + S, C.ink, 2, [16, 8])
         } else if (o.kind === 'rail') {
             rect(o, FILL.stair)
-            D.line(img, px(o.x1) + 2, py(o.y2), px(o.x1) + 2, py(o.y1), C.ink, 2)
-            D.line(img, px(o.x2) - 3, py(o.y2), px(o.x2) - 3, py(o.y1), C.ink, 2)
+            if (o.y2 - o.y1 > o.x2 - o.x1) {
+                D.line(img, px(o.x1) + 2, py(o.y2), px(o.x1) + 2, py(o.y1), C.ink, 2)
+                D.line(img, px(o.x2) - 3, py(o.y2), px(o.x2) - 3, py(o.y1), C.ink, 2)
+            } else {
+                D.line(img, px(o.x1), py(o.y2) + 2, px(o.x2), py(o.y2) + 2, C.ink, 2)
+                D.line(img, px(o.x1), py(o.y1) - 3, px(o.x2), py(o.y1) - 3, C.ink, 2)
+            }
         }
     }
     for (const w of floor.walls) {
@@ -61,7 +68,7 @@ const renderFloor = (floor, S, spec) => {
     // road, landing at the rear, flight B returning
     const st = roomById.stair
     if (st) {
-        const T = S0.STAIR
+        const T = floor.STAIR || S0.STAIR
         const ax2 = st.x1 + T.FLIGHT_W
         const bx1 = ax2 + T.GAP
         const land = st.y2 - T.LANDING

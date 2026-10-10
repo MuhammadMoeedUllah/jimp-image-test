@@ -4,10 +4,11 @@
   "description": "generates images from text",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js && node floorplan26/check.js ground first roof",
+    "test": "node test.js && node floorplan26/check.js ground first roof && node floorplan42/check.js ground first second",
     "start": "node index.js",
     "floorplan": "node floorplan/render.js",
-    "house26": "node floorplan26/render.js"
+    "house26": "node floorplan26/render.js",
+    "shophouse": "node floorplan42/render.js"
   },
   "author": "",
   "license": "ISC",
