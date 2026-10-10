@@ -41,6 +41,7 @@ const X = {
     STUDY: PX.BED, // 258.5 study left face (11'-0")
     STUDYR: PX.BEDR, // 390.5
     KIT: PX.KIT, //   395 rear terrace left face
+    OTS2: PX.OTS2, // 447 light well left face
     R: PX.R, //       495
 }
 const Y_B2 = 100.5 //  bath 2 front wall (bath 2 is 5'-0" deep)
@@ -69,7 +70,8 @@ const rooms = [
     { id: 'ots1', name: 'LIGHT WELL', kind: 'void', ...R(X.ST, Y.OTS1, X.OTS1R, Y.T) },
     { id: 'study', name: 'STUDY / PRAYER', kind: 'utility', ...R(X.STUDY, Y.REAR, X.STUDYR, Y.T) },
     { id: 'terrace2', name: 'MASTER TERRACE', kind: 'terrace', ...R(X.KIT, Y.REAR, X.R, Y_T2) },
-    { id: 'ots2', name: 'LIGHT WELL', kind: 'void', ...R(X.KIT, Y.OTS2, X.R, Y.T) },
+    { id: 'terrace2B', partOf: 'terrace2', kind: 'terrace', ...R(X.KIT, Y_T2, X.OTS2 - 4.5, Y.T) },
+    { id: 'ots2', name: 'LIGHT WELL', kind: 'void', ...R(X.OTS2, Y.OTS2, X.R, Y.T) },
 ]
 
 const walls = [
@@ -104,7 +106,8 @@ const walls = [
 ]
 
 const openings = [
-    { id: 'rail2', kind: 'rail', ...R(X.KIT, Y_T2, X.R, Y.OTS2) }, // railing: terrace edge over the light well
+    { id: 'rail2', kind: 'rail', ...R(X.OTS2 - 4.5, Y_T2, X.R, Y.OTS2) }, // railing: terrace edge over the light well
+    { id: 'rail3', kind: 'rail', ...R(X.OTS2 - 4.5, Y.OTS2, X.OTS2, Y.T) },
 ]
 
 const doors = [

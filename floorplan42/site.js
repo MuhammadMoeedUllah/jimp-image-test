@@ -31,7 +31,8 @@ const PX = {
     OTS1R: HOUSE_X + 63, // 254  rear-left light well right face
     BED: HOUSE_X + 67.5, // 258.5
     BEDR: HOUSE_X + 199.5, // 390.5
-    KIT: HOUSE_X + 204, //  395  kitchen / rear-right light well left face
+    KIT: HOUSE_X + 204, //  395  upper-floor terrace left face
+    OTS2: HOUSE_X + 256, // 447  rear-right O.T.S. left face (ground-floor bath line)
     R: PLOT_W - EXT, //     495
 }
 const Y = {

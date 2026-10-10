@@ -21,7 +21,7 @@ const X = {
     LBL: 195.5, LBR: 293, //  lobby walls
     PD: PX.PD, PDW: PX.PDW, MB: 357.5, MBR: 423.5, DR: 428,
     BATHA: 59.5, LA: 59.5, LAW: 64, STO: 195.5, OTS1R: PX.OTS1R,
-    FAM: PX.BED, FAMR: PX.BEDR, KIT: PX.KIT, R: PX.R,
+    FAM: PX.BED, FAMR: PX.BEDR, KIT: PX.KIT, OTS2: PX.OTS2, R: PX.R,
 }
 const Y_BA = 100.5 //   bath A front wall
 const Y_LB = 130 //     lobby front wall (lounge is 10'-1" deep)
@@ -55,7 +55,8 @@ const rooms = [
     { id: 'ots1', name: 'LIGHT WELL', kind: 'void', ...R(X.ST, Y.OTS1, X.OTS1R, Y.T) },
     { id: 'family', name: 'FAMILY ROOM', kind: 'room', ...R(X.FAM, Y.REAR, X.FAMR, Y.T) },
     { id: 'terrace2', name: 'TERRACE B', kind: 'terrace', ...R(X.KIT, Y.REAR, X.R, Y_T2) },
-    { id: 'ots2', name: 'LIGHT WELL', kind: 'void', ...R(X.KIT, Y.OTS2, X.R, Y.T) },
+    { id: 'terrace2B', partOf: 'terrace2', kind: 'terrace', ...R(X.KIT, Y_T2, X.OTS2 - 4.5, Y.T) },
+    { id: 'ots2', name: 'LIGHT WELL', kind: 'void', ...R(X.OTS2, Y.OTS2, X.R, Y.T) },
 ]
 
 const walls = [
@@ -92,7 +93,8 @@ const walls = [
 ]
 
 const openings = [
-    { id: 'rail2', kind: 'rail', ...R(X.KIT, Y_T2, X.R, Y.OTS2) },
+    { id: 'rail2', kind: 'rail', ...R(X.OTS2 - 4.5, Y_T2, X.R, Y.OTS2) }, // railing: terrace edge over the light well
+    { id: 'rail3', kind: 'rail', ...R(X.OTS2 - 4.5, Y.OTS2, X.OTS2, Y.T) },
 ]
 
 const doors = [

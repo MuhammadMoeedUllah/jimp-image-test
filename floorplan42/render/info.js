@@ -10,10 +10,11 @@ const FLOORS = [require('../ground'), require('../first'), require('../second')]
 
 const CONCEPT = [
     ['THE REFERENCE, ADJUSTED', [
-        'The 25\' x 54\' plan loses 18 ft of depth: its rear bedroom band goes;',
-        'the porch, drawing room, stair, lounge, kitchen and one bedroom stay in',
-        'the reference order. The extra 1\'-1" of width goes to the drawing room.',
-        'Two open-to-sky wells light the bedroom, bath and kitchen at the back.',
+        'The 25\' x 54\' reference has five bands of depth; 36\' holds three.',
+        'Behind the 13\' porch and the stair one band remains, so the reference\'s',
+        'second rear bedroom is the one thing that went. Porch, drawing room,',
+        'stair, double main door, guest bath + open, lounge, kitchen (rear left,',
+        'behind the stair) and a bedroom with bath keep their reference places.',
     ]],
     ['FIRST FLOOR - FAMILY', [
         'TV lounge over the porch is the hub: the stair arrives in it and every',
@@ -90,8 +91,9 @@ const renderInfo = (width, checks) => {
     const [G, F, S] = FLOORS
     const sched = [
         ['GROUND FLOOR', null],
-        ['Car porch', G, 'porch'], ['Drawing room', G, 'drawing'], ['Lounge (L-shaped)', G, 'lounge'], ['Guest WC', G, 'wc'],
-        ['Bedroom', G, 'bedroom'], ['Bedroom bath', G, 'bath'], ['Kitchen', G, 'kitchen'], ['Light wells (2)', G, ['ots1', 'ots2']],
+        ['Car porch', G, 'porch'], ['Drawing room', G, 'drawing'], ['Lounge (L-shaped)', G, 'lounge'], ['Guest bath', G, 'wc'],
+        ['Open (light well)', G, 'open'], ['Kitchen (L-shaped)', G, 'kitchen'], ['Bedroom', G, 'bedroom'], ['Bedroom bath', G, 'bath'],
+        ['O.T.S. wells (2)', G, ['ots1', 'ots2']],
         ['FIRST FLOOR', null],
         ['Bedroom 2 (L-shaped)', F, 'bed2'], ['Bath 2', F, 'bath2'], ['TV lounge', F, 'lounge'], ['Master bedroom', F, 'master'],
         ['Master bath', F, 'mbath'], ['Walk-in dressing', F, 'dress'], ['Pantry', F, 'pantry'], ['Bedroom 3', F, 'bed3'],
@@ -118,7 +120,7 @@ const renderInfo = (width, checks) => {
         if (ids.length === 1) T(size(fl, id), xx + 215, yy, 16, C.dim)
         T(`${a.toFixed(0)} sf`, xx + 365, yy, 16, C.dim)
     })
-    const gf = (313 * 432 - area(G, 'ots1') * 144 - area(G, 'ots2') * 144) / 144
+    const gf = (313 * 432 - (area(G, 'ots1') + area(G, 'ots2') + area(G, 'open')) * 144) / 144
     const uf = (504 * 432 - area(F, 'ots1') * 144 - area(F, 'ots2') * 144) / 144
     T(`Covered: ground ${gf.toFixed(0)} sq ft (house portion) + first ${(uf - area(F, 'terrace') - area(F, 'terrace2')).toFixed(0)} + second ${(uf - area(S, 'terrace') - area(S, 'terrace2')).toFixed(0)} sq ft`, x2, 104 + half * 25 + 14, 17)
 
