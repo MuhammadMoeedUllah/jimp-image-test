@@ -20,7 +20,6 @@ const GF = {
         { text: 'UP', x: 29, y: 190, size: 20, bg: stairBg, allowOver: true },
         { text: 'LOUNGE', x: 178, y: 200, size: 24 },
         { text: sz(206.5, 120), x: 178, y: 190, size: 16, dim: true },
-        { text: 'DINING', x: 269, y: 267, size: 18, rotate: 90 },
         { text: 'BATH', x: 236, y: 224, size: 14 },
         { text: 'OPEN', x: 288, y: 212, size: 14, rotate: 90 },
         { text: 'KITCHEN', x: 80, y: 345, size: 22 },
@@ -31,7 +30,7 @@ const GF = {
         { text: 'BATH', x: 295, y: 332, size: 14, rotate: 90 },
         { text: 'O.T.S.', x: 288, y: 398, size: 11 },
     ],
-    tags: { D1: [150, 62], D3: [202, 184], W8: [65, 85], W3: [268, 242], W4: [280, 230], W7: [268, 388] },
+    tags: { D1: [150, 62], W8: [65, 85], W3: [258, 244], W4: [280, 230], W7: [268, 388] },
 }
 
 const FF = {

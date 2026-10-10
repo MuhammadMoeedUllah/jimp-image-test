@@ -2,15 +2,18 @@
  * GROUND FLOOR - the reference plan (25' x 54') fitted to 26'-1" x 36'-0".
  * House coordinates: x = 0 at the party wall with the shops (plot x 191).
  *
- * Kept in the reference's own places: car porch front-left with the 9' gate
- * and small door; drawing room front-right entered from the porch; 7'-wide
- * stair behind the porch; double door from the porch into the lounge beside
- * the stair foot; guest bath + "open" light well behind the drawing room;
- * lounge in the middle; kitchen at the rear LEFT behind the stair; a
- * bedroom with its bath at the rear right, lit by an O.T.S. well.
+ * Kept in the reference's own places, nothing added: car porch front-left
+ * with the 9' gate and small door; drawing room front-right entered from the
+ * porch; 7'-wide stair behind the porch; double door from the porch into the
+ * lounge beside the stair foot; guest bath + "open" light well behind the
+ * drawing room; lounge in the middle with the reference's sofa set; kitchen
+ * at the rear LEFT behind the stair; a bedroom with its bath at the rear
+ * right. The reference's one O.T.S. is split into two small wells so the
+ * kitchen, the bedroom and the bath each get a window.
  *
- * What cannot fit: the reference's second rear bedroom band. Behind a 13'
- * porch and a 9'-8" stair there is one 10'-4½" band left, not three.
+ * What cannot fit (chosen with the client): the reference's second rear
+ * bedroom. Behind a 13' porch and a 9'-8" stair there is one 10'-4½" band
+ * left, not three; that bedroom is bedroom 3 on the first floor.
  */
 const { HOUSE_W, PLOT_H, EXT, STAIR, Y } = require('./site')
 
@@ -90,7 +93,6 @@ const doors = [
     { id: 'D1', label: 'Drawing room from the porch', wall: 'wPD', a: 'porch', b: 'drawing', from: 20, to: 50, swingInto: 'drawing', hinge: 'start' },
     { id: 'D2a', label: 'Main door, left leaf (4\'-0" double door)', wall: 'wPL', a: 'porch', b: 'lounge', from: 100, to: 124, swingInto: 'lounge', hinge: 'start' },
     { id: 'D2b', label: 'Main door, right leaf', wall: 'wPL', a: 'porch', b: 'lounge', from: 124, to: 148, swingInto: 'lounge', hinge: 'end' },
-    { id: 'D3', label: 'Drawing room from the lounge (added)', wall: 'wDL', a: 'lounge', b: 'drawing', from: 180, to: 210, swingInto: 'drawing', hinge: 'start' },
     { id: 'D4', label: 'Guest bath', wall: 'wWc1', a: 'lounge', b: 'wc', from: 190, to: 216, swingInto: 'wc', hinge: 'start' },
     { id: 'D5', label: 'Bedroom', wall: 'wMid', a: 'lounge', b: 'bedroom', from: 196, to: 226, swingInto: 'bedroom', hinge: 'start' },
     { id: 'D6', label: 'Bedroom bath', wall: 'wBB', a: 'bedroom', b: 'bath', from: 300, to: 326, swingInto: 'bath', hinge: 'end' },
@@ -100,7 +102,7 @@ const doors = [
 const windows = [
     { id: 'W1', label: 'Drawing room to street (5\'-0")', wall: 'wFront', from: 200, to: 260 },
     { id: 'W2', label: 'Drawing room to the open', wall: 'wDL', from: 278, to: 298 },
-    { id: 'W3', label: 'Lounge dining to the open', wall: 'wWc2', from: 278, to: 298 },
+    { id: 'W3', label: 'Lounge to the open', wall: 'wWc2', from: 278, to: 298 },
     { id: 'W4', label: 'Guest bath to the open (frosted)', wall: 'wWcO', from: 196, to: 226 },
     { id: 'W5', label: 'Kitchen to O.T.S. (over the hob)', wall: 'wKO1', from: 15, to: 57 },
     { id: 'W6', label: 'Bedroom to O.T.S.', wall: 'wBB', from: 383, to: 419 },
@@ -115,13 +117,11 @@ const items = [
     { id: 'dSofa2a', type: 'sofa', room: 'drawing', facing: 'E', ...R(171, 60, 201, 114) },
     { id: 'dSofa2b', type: 'sofa', room: 'drawing', facing: 'S', ...R(250, 132, 304, 165) },
     { id: 'dTable', type: 'table', room: 'drawing', ...R(225, 66, 249, 102) },
-    // lounge: TV on the stair wall, sofa facing it, banquette dining for four under the open's window
-    { id: 'tv', type: 'tv', room: 'lounge', ...R(97.5, 220, 113.5, 268) },
-    { id: 'lSofa', type: 'sofa', room: 'lounge', facing: 'W', ...R(158, 216, 191, 288) },
-    { id: 'dnBench', type: 'banquette', room: 'lounge', facing: 'W', ...R(286, 240, 304, 294) },
-    { id: 'dnTable', type: 'table', room: 'lounge', ...R(252, 246, 286, 288) },
-    { id: 'dnC1', type: 'chair', room: 'lounge', facing: 'E', ...R(234, 249, 252, 267) },
-    { id: 'dnC2', type: 'chair', room: 'lounge', facing: 'E', ...R(234, 269, 252, 287) },
+    // lounge: the reference's sofa set - a sofa on the rear wall between the two doors,
+    // a sofa on the right wall under the open's window, centre table
+    { id: 'lSofaA', type: 'sofa', room: 'lounge', facing: 'S', ...R(137, 261, 191, 294) },
+    { id: 'lSofaB', type: 'sofa', room: 'lounge', facing: 'W', ...R(271, 240, 304, 294) },
+    { id: 'lTable', type: 'table', room: 'lounge', ...R(140, 222, 176, 244) },
     // guest bath
     { id: 'wcBasin', type: 'basin', room: 'wc', ...R(220, 174, 240, 190) },
     { id: 'wcWc', type: 'wc', room: 'wc', facing: 'S', ...R(247, 206, 265, 234) },
@@ -152,8 +152,8 @@ const targets = [
     { name: 'main door landing', x: 124, y: 150 },
     { name: 'drawing room, between the sofas', x: 237, y: 120 },
     { name: 'lounge at the stair foot', x: 110, y: 194 },
-    { name: 'lounge sofa', x: 136, y: 250 },
-    { name: 'dining chair', x: 214, y: 258 },
+    { name: 'lounge: rear sofa', x: 195, y: 250 },
+    { name: 'lounge: right sofa', x: 250, y: 266 },
     { name: 'guest bath', x: 234, y: 212 },
     { name: 'kitchen fridge', x: 56, y: 312 },
     { name: 'kitchen hob', x: 50, y: 331 },

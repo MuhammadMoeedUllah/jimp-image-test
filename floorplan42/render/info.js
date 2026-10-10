@@ -10,11 +10,11 @@ const FLOORS = [require('../ground'), require('../first'), require('../second')]
 
 const CONCEPT = [
     ['THE REFERENCE, ADJUSTED', [
-        'The 25\' x 54\' reference has five bands of depth; 36\' holds three.',
-        'Behind the 13\' porch and the stair one band remains, so the reference\'s',
-        'second rear bedroom is the one thing that went. Porch, drawing room,',
-        'stair, double main door, guest bath + open, lounge, kitchen (rear left,',
-        'behind the stair) and a bedroom with bath keep their reference places.',
+        'Every reference room keeps its place and nothing is added; only sizes',
+        'change. The one thing a 36\' plot cannot hold is the reference\'s second',
+        'rear bedroom (behind the 13\' porch and the stair one band is left, not',
+        'three): it is bedroom 3 upstairs. The reference O.T.S. is split into',
+        'two small wells so the kitchen, bedroom and bath each get a window.',
     ]],
     ['FIRST FLOOR - FAMILY', [
         'TV lounge over the porch is the hub: the stair arrives in it and every',
