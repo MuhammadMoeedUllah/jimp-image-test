@@ -26,7 +26,7 @@ const FLOORS = [
     { mod: require('./second'), spec: specs.SF, subtitle: 'independent portion: own lobby door, two suites, kitchen, family room', road: 'FRONT ROAD  -  42\'-0"   (shop road along the left side)' },
 ]
 const CH = {
-    GF: { top: 'GF x through kitchen / bedroom / bath', bottom: 'GF x through porch / drawing room', left: 'GF y through porch / stair / kitchen / O.T.S.', right: 'GF y through drawing / open / dining / bath / O.T.S.' },
+    GF: { top: 'GF x through kitchen / bedroom / bath', bottom: 'GF x through porch / drawing room', left: 'GF y through porch / stair / kitchen / O.T.S.', right: 'GF y through alley / drawing / open / lounge / bath / O.T.S.' },
     FF: { top: 'FF x through bath 3 / laundry / terrace / lobby / study / master terrace', bottom: 'FF x through bedroom 2 / TV lounge / master', left: 'FF y through bedroom 2 / bedroom 3 / bath 3 / terrace', right: 'FF y through master / master bath / master terrace / light well' },
     SF: { top: 'SF x through laundry / terrace / lobby / family room / terrace B', bottom: 'SF x through bedroom A / lounge / bedroom B', left: 'SF y through bedroom A / kitchen / laundry / terrace', right: 'SF y through bedroom B / bath B / terrace B / light well' },
 }

@@ -91,7 +91,7 @@ const renderInfo = (width, checks) => {
     const [G, F, S] = FLOORS
     const sched = [
         ['GROUND FLOOR', null],
-        ['Car porch', G, 'porch'], ['Drawing room', G, 'drawing'], ['Lounge (L-shaped)', G, 'lounge'], ['Guest bath', G, 'wc'],
+        ['Car porch', G, 'porch'], ['Front alley', G, 'alley'], ['Drawing room', G, 'drawing'], ['Lounge (L-shaped)', G, 'lounge'], ['Guest bath', G, 'wc'],
         ['Open (light well)', G, 'open'], ['Kitchen (L-shaped)', G, 'kitchen'], ['Bedroom', G, 'bedroom'], ['Bedroom bath', G, 'bath'],
         ['O.T.S. wells (2)', G, ['ots1', 'ots2']],
         ['FIRST FLOOR', null],

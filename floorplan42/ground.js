@@ -41,13 +41,16 @@ const X = {
     GATE2: 121.5,
     DOOR: 130.5, //   small door 2'-6"
 }
+const Y_AL = 33 //     front alley rear face (2'-0" deep, between the boundary wall and the drawing room)
+const Y_DF = 42 //     drawing room front face (9" wall 33-42)
 const Y_WC = 234 //    guest WC + open rear face (5'-0" deep)
 const Y_K1 = 366.5 //  kitchen full-width part rear face (5'-8")
 const Y_BATH = 375 //  bedroom bath rear face (6'-4½" deep)
 
 const rooms = [
     { id: 'porch', name: 'CAR PORCH', kind: 'porch', ...R(X.L, Y.F, X.PORCH_R, Y.FRONT) },
-    { id: 'drawing', name: 'DRAWING ROOM', kind: 'drawing', ...R(X.DRW, Y.F, XR, Y.FRONT) },
+    { id: 'alley', name: 'FRONT ALLEY', kind: 'alley', ...R(X.PORCH_R, Y.F, XR, Y_AL) }, // open to the small-door landing
+    { id: 'drawing', name: 'DRAWING ROOM', kind: 'drawing', ...R(X.DRW, Y_DF, XR, Y.FRONT) },
     { id: 'stair', name: 'STAIR', kind: 'stair', ...R(X.L, Y.MID, X.ST, Y.STAIR_END) },
     { id: 'stairB', partOf: 'stair', kind: 'stair', ...R(X.ST, Y.MID, X.STW, Y.MID + 40) }, // open side at the foot
     { id: 'lounge', name: 'LOUNGE', kind: 'room', ...R(X.STW, Y.MID, X.LR, Y.STAIR_END) },
@@ -68,8 +71,9 @@ const walls = [
     { id: 'wRear', ...R(EXT, Y.T, XR, H) },
     { id: 'wPier', ...R(X.L, 0, X.GATE1, Y.F) },
     { id: 'wGate', ...R(X.GATE2, 0, X.PORCH_R, Y.F) }, // pier + small door
-    { id: 'wFront', ...R(X.PORCH_R, 0, XR, Y.F) }, // drawing room street wall
-    { id: 'wPD', ...R(X.PORCH_R, Y.F, X.DRW, Y.MID) }, // porch | drawing (9" bearing)
+    { id: 'wFront', ...R(X.PORCH_R, 0, XR, Y.F) }, // boundary wall along the alley
+    { id: 'wDF', ...R(X.DRW, Y_AL, XR, Y_DF) }, // drawing room front wall, on the alley
+    { id: 'wPD', ...R(X.PORCH_R, Y_AL, X.DRW, Y.MID) }, // porch | drawing (9" bearing)
     { id: 'wPL', ...R(X.L, Y.FRONT, X.PORCH_R, Y.MID) }, // porch rear: double main door
     { id: 'wDL', ...R(X.DRW, Y.FRONT, XR, Y.MID) }, // drawing rear
     { id: 'wSt', ...R(X.ST, Y.MID + 40, X.STW, Y.STAIR_END) }, // stair | lounge
@@ -90,7 +94,7 @@ const openings = [
 
 const doors = [
     { id: 'D0', label: 'Small door: street to porch (2\'-6")', wall: 'wGate', a: 'street', b: 'porch', from: X.DOOR, to: X.PORCH_R, swingInto: 'porch', hinge: 'end' },
-    { id: 'D1', label: 'Drawing room from the porch', wall: 'wPD', a: 'porch', b: 'drawing', from: 20, to: 50, swingInto: 'drawing', hinge: 'start' },
+    { id: 'D1', label: 'Drawing room from the porch', wall: 'wPD', a: 'porch', b: 'drawing', from: 52, to: 82, swingInto: 'drawing', hinge: 'start' },
     { id: 'D2a', label: 'Main door, left leaf (4\'-0" double door)', wall: 'wPL', a: 'porch', b: 'lounge', from: 100, to: 124, swingInto: 'lounge', hinge: 'start' },
     { id: 'D2b', label: 'Main door, right leaf', wall: 'wPL', a: 'porch', b: 'lounge', from: 124, to: 148, swingInto: 'lounge', hinge: 'end' },
     { id: 'D4', label: 'Guest bath', wall: 'wWc1', a: 'lounge', b: 'wc', from: 190, to: 216, swingInto: 'wc', hinge: 'start' },
@@ -100,7 +104,7 @@ const doors = [
 ]
 
 const windows = [
-    { id: 'W1', label: 'Drawing room to street (5\'-0")', wall: 'wFront', from: 200, to: 260 },
+    { id: 'W1', label: 'Drawing room to the front alley (5\'-0")', wall: 'wDF', from: 200, to: 260 },
     { id: 'W2', label: 'Drawing room to the open', wall: 'wDL', from: 278, to: 298 },
     { id: 'W3', label: 'Lounge to the open', wall: 'wWc2', from: 278, to: 298 },
     { id: 'W4', label: 'Guest bath to the open (frosted)', wall: 'wWcO', from: 196, to: 226 },
@@ -113,10 +117,10 @@ const windows = [
 const items = [
     { id: 'car', type: 'car', room: 'porch', ...R(30, 13, 100, 163) }, // 12'-6" hatchback; a 15' sedan overhangs the gate line
     // drawing room: sofas on three sides, centre table (as the reference)
-    { id: 'dSofa3', type: 'sofa', room: 'drawing', facing: 'W', ...R(274, 40, 304, 112) },
-    { id: 'dSofa2a', type: 'sofa', room: 'drawing', facing: 'E', ...R(171, 60, 201, 114) },
+    { id: 'dSofa3', type: 'sofa', room: 'drawing', facing: 'W', ...R(274, 48, 304, 120) },
+    { id: 'dSofa2a', type: 'sofa', room: 'drawing', facing: 'E', ...R(171, 90, 201, 144) },
     { id: 'dSofa2b', type: 'sofa', room: 'drawing', facing: 'S', ...R(250, 132, 304, 165) },
-    { id: 'dTable', type: 'table', room: 'drawing', ...R(225, 66, 249, 102) },
+    { id: 'dTable', type: 'table', room: 'drawing', ...R(225, 84, 249, 120) },
     // lounge: the reference's sofa set - a sofa on the rear wall between the two doors,
     // a sofa on the right wall under the open's window, centre table
     { id: 'lSofaA', type: 'sofa', room: 'lounge', facing: 'S', ...R(137, 261, 191, 294) },
@@ -150,7 +154,8 @@ const START = { name: 'porch, inside the small door', x: 145, y: 25 }
 const targets = [
     { name: 'car driver door', x: 131, y: 90 },
     { name: 'main door landing', x: 124, y: 150 },
-    { name: 'drawing room, between the sofas', x: 237, y: 120 },
+    { name: 'front alley, far end', x: 290, y: 21 },
+    { name: 'drawing room, between the sofas', x: 237, y: 132 },
     { name: 'lounge at the stair foot', x: 110, y: 194 },
     { name: 'lounge: rear sofa', x: 195, y: 250 },
     { name: 'lounge: right sofa', x: 250, y: 266 },
@@ -164,12 +169,13 @@ const targets = [
 ]
 
 const chains = {
+    'GF x through porch / front alley': [[EXT, 'wall'], [153, 'car porch'], [142, 'front alley'], [EXT, 'wall']],
     'GF x through porch / drawing room': [[EXT, 'wall'], [153, 'car porch'], [EXT, 'wall'], [133, 'drawing room'], [EXT, 'wall']],
     'GF x through stair / lounge / guest bath / open': [[EXT, 'wall'], [84, 'stair'], [4.5, 'wall'], [118, 'lounge'], [4.5, 'wall'], [47.5, 'guest bath'], [4.5, 'wall'], [32, 'open'], [EXT, 'wall']],
     'GF x through kitchen / bedroom / bath': [[EXT, 'wall'], [121, 'kitchen'], [4.5, 'wall'], [117, 'bedroom'], [4.5, 'wall'], [48, 'bath'], [EXT, 'wall']],
     'GF y through porch / stair / kitchen / O.T.S.': [[EXT, 'gate line'], [156, 'car porch'], [EXT, 'wall'], [120, 'stair'], [4.5, 'wall'], [68, 'kitchen'], [4.5, 'wall'], [52, 'O.T.S.'], [EXT, 'wall']],
-    'GF y through drawing / lounge / bedroom': [[EXT, 'wall'], [156, 'drawing room'], [EXT, 'wall'], [120, 'lounge'], [4.5, 'wall'], [124.5, 'bedroom'], [EXT, 'wall']],
-    'GF y through drawing / open / dining / bath / O.T.S.': [[EXT, 'wall'], [156, 'drawing room'], [EXT, 'wall'], [60, 'open'], [4.5, 'wall'], [55.5, 'lounge dining'], [4.5, 'wall'], [76.5, 'bath'], [4.5, 'wall'], [43.5, 'O.T.S.'], [EXT, 'wall']],
+    'GF y through alley / drawing / lounge / bedroom': [[EXT, 'wall'], [24, 'front alley'], [EXT, 'wall'], [123, 'drawing room'], [EXT, 'wall'], [120, 'lounge'], [4.5, 'wall'], [124.5, 'bedroom'], [EXT, 'wall']],
+    'GF y through alley / drawing / open / lounge / bath / O.T.S.': [[EXT, 'wall'], [24, 'front alley'], [EXT, 'wall'], [123, 'drawing room'], [EXT, 'wall'], [60, 'open'], [4.5, 'wall'], [55.5, 'lounge dining'], [4.5, 'wall'], [76.5, 'bath'], [4.5, 'wall'], [43.5, 'O.T.S.'], [EXT, 'wall']],
 }
 
 module.exports = { id: 'GF', title: 'GROUND FLOOR  26\'-1" x 36\'-0"', W, H, STAIR, rooms, walls, openings, doors, windows, items, START, targets, chains }

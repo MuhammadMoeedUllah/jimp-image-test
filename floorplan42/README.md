@@ -22,7 +22,8 @@ So the second rear bedroom went (the client's choice: it is bedroom 3 upstairs);
 | reference (25' x 54') | here (26'-1" x 36'-0") |
 |---|---|
 | car porch 12'-9" x 13', gate 9' x 7', small door beside it | car porch 12'-9" x 13'-0", gate 9'-0" x 7', 2'-6" small door |
-| drawing room 10' x 12'-6", door from the porch, front window | drawing room 11'-1" x 13'-0" (the extra 1'-1" of width), same door and window |
+| strip between the boundary wall and the drawing room, beside the small door, sunshade over it | front alley 11'-10" x 2'-0", open to the small-door landing; the first floor projects over it |
+| drawing room 10' x 12'-6", door from the porch, window on the front strip | drawing room 11'-1" x 10'-3" (the extra 1'-1" of width), same door, window on the alley |
 | staircase 7' wide behind the porch | 7'-0" x 10'-0" dog-leg stair behind the porch, open to the lounge at its foot |
 | double door from the porch into the lounge beside the stair | 4'-0" double door in the same place |
 | bath 6'-4" x 4' + open 4' x 4'-6" behind the drawing room | guest bath 3'-11½" x 5' + open 2'-8" x 5' behind the drawing room; the bath, the drawing room and the dining all have a window on the open |
